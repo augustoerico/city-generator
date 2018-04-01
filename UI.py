@@ -40,6 +40,7 @@ def setup_matplotlib():
 from procedural_city_generation.roadmap import main as roadmap_main
 from procedural_city_generation.polygons import main as polygons_main
 from procedural_city_generation.building_generation import main as building_generation_main
+from procedural_city_generation.visualization import blenderize
 from procedural_city_generation.additional_stuff.Singleton import Singleton
 
 
@@ -77,9 +78,11 @@ def building_generation():
 
 
 def visualization():
-    os.system("blender --python " + path + "/visualization/blenderize.py")
-    from procedural_city_generation.additional_stuff.Singleton import Singleton
-    Singleton("visualization").kill()
+    # os.system("blender --python " + path + "/visualization/blenderize.py")
+    # from procedural_city_generation.additional_stuff.Singleton import Singleton
+    # Singleton("visualization").kill()
+    blenderize.blenderize()
+    print(donemessage)
 
 
 def main(args):
