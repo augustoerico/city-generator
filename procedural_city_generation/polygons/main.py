@@ -9,11 +9,15 @@ def main(vertex_list=None):
     List of all Polygon2Ds representing Blocks
     List of all Polygon2Ds which are too large to be Lots
     Polygon2D representing the road-network'''
-    singleton = Singleton("polygons")
+    if Singleton.instance:
+        Singleton.instance = None
+    singleton = Singleton("polygons").instance
+
+    print('-' * 80)
+    print(singleton.__dict__)
 
     if vertex_list is None:
         from procedural_city_generation.additional_stuff import pickletools
-
         vertex_list = pickletools.reconstruct(singleton.input_name)
         print("Reconstructing of data structure finished")
 
