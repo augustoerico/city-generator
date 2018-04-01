@@ -13,9 +13,6 @@ def main(vertex_list=None):
         Singleton.instance = None
     singleton = Singleton("polygons").instance
 
-    print('-' * 80)
-    print(singleton.__dict__)
-
     if vertex_list is None:
         from procedural_city_generation.additional_stuff import pickletools
         vertex_list = pickletools.reconstruct(singleton.input_name)
