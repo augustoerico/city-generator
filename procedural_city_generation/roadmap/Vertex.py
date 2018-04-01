@@ -1,14 +1,11 @@
+from matplotlib import pyplot as plt
+
 from procedural_city_generation.additional_stuff.Singleton import Singleton
-try:
-    from procedural_city_generation.roadmap.main import gui as plt
-    if plt is None:
-        import matplotlib.pyplot as plt
-except:
-    import matplotlib.pyplot as plt
 
-plotbool=False
+plotbool = False
 
-singleton=Singleton("roadmap")
+singleton = Singleton("roadmap")
+
 
 class Vertex(object):
     """
@@ -23,6 +20,7 @@ class Vertex(object):
     - seed : boolean
         Describes whether this (major) road is a seed
     """
+
     def __init__(self, coords):
         """
         Parameters
@@ -31,22 +29,21 @@ class Vertex(object):
             XY-Coordinates of this Vertex
 
         """
-        self.coords=coords
-        self.neighbours=[]
-        self.minor_road=False
-        self.seed=False
-
+        self.coords = coords
+        self.neighbours = []
+        self.minor_road = False
+        self.seed = False
 
     def __cmp__(self, other):
         if isinstance(other, Vertex):
-            if self.coords[0]>other.coords[0]:
+            if self.coords[0] > other.coords[0]:
                 return 1
-            elif self.coords[0]<other.coords[0]:
+            elif self.coords[0] < other.coords[0]:
                 return -1
             else:
-                if self.coords[1]>other.coords[1]:
+                if self.coords[1] > other.coords[1]:
                     return 1
-                elif self.coords[1]<other.coords[1]:
+                elif self.coords[1] < other.coords[1]:
                     return -1
             return 0
 
@@ -68,17 +65,17 @@ class Vertex(object):
             other.neighbours.append(self)
 
         if plotbool:
-            col='black'
-            width=3
+            col = 'black'
+            width = 3
             if self.minor_road or other.minor_road:
-                col='blue'
-                width=1
+                col = 'blue'
+                width = 1
             plt.plot([self.coords[0], other.coords[0]], [self.coords[1], other.coords[1]], color=col, linewidth=width)
 
-
     def __repr__(self):
-        return "Vertex"+str(self.coords)+"\n"
+        return "Vertex" + str(self.coords) + "\n"
+
 
 def set_plotbool(singletonbool):
     global plotbool
-    plotbool=singletonbool
+    plotbool = singletonbool

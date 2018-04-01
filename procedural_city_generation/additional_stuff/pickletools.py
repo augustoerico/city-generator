@@ -5,7 +5,7 @@ def save_vertexlist(vertex_list, name="output", savefig=0):
 
     import pickle
     try:
-        with open(path+"/temp/"+name, "wb") as f:
+        with open('temp/' + name, "wb") as f:
             import sys
             if sys.version[0] == "2":
                 s = pickle.dumps(vertex_list)
@@ -13,10 +13,10 @@ def save_vertexlist(vertex_list, name="output", savefig=0):
             else:
                 pickle.dump(vertex_list, f)
     except IOError as error:
-        print "Specified output file doesn't exist: {0}".format(error)
+        print("Specified output file doesn't exist: {0}".format(error))
         return 1
     except RuntimeError:
-        print("Recursionlimit was not enough - Pickle trying again with sys.recusionlimit at 50000")
+        print("Recursion limit was not enough - Pickle trying again with sys.recusionlimit at 50000")
         import sys
         sys.setrecursionlimit(50000)
         return save_vertexlist(vertex_list, name, savefig)
@@ -38,7 +38,8 @@ def save_vertexlist(vertex_list, name="output", savefig=0):
                          color=col,
                          linewidth=width)
 
-        plt.savefig(path+"/outputs/"+name+".png")
+        # plt.savefig(path + "/outputs/" + name + ".png")
+        plt.savefig('outputs/' + name + '.png')
     else:
         print("Figure is not being saved as image, if you want to save it, change savefig option in conf.txt")
     print("New File " + name + " created in procedural_city_generation/temp/ with ", len(vertex_list), " Vertices ")
@@ -53,7 +54,7 @@ def reconstruct(path):
         fullpath = os.path.dirname(procedural_city_generation.__file__) + "/temp/" + path
 
         import pickle
-        with open(fullpath, 'rb') as f:
+        with open('temp/' + path, 'rb') as f:
             vertex_list = pickle.loads(f.read())
             for i, v in enumerate(vertex_list):
                 v.selfindex = i
