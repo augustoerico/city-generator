@@ -29,9 +29,9 @@ def input_image_setup(rule_image_name, density_image_name):
 
     import matplotlib.pyplot as plt
 
-    plt.imsave(density_image_name.split(".")[0] + "diffused.png", density_img, cmap='gray')
+    plt.imsave('temp/' + density_image_name.split(".")[0] + "diffused.png", density_img, cmap='gray')
 
-    with open(density_image_name.split(".")[0] + "isdiffused.txt", 'w') as f:
+    with open('temp/' + density_image_name.split(".")[0] + "isdiffused.txt", 'w') as f:
         f.write("False")
 
     rule_img *= 255
