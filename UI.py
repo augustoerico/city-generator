@@ -1,13 +1,17 @@
 import os
 import sys
 import procedural_city_generation
-donemessage = "\n"+(150*"-")+"\n\t\t\t  Done, waiting for command\n"+(150*"-")+"\n"
+
+donemessage = "\n" + (150 * "-") + "\n\t\t\t  Done, waiting for command\n" + (150 * "-") + "\n"
 path = os.path.dirname(procedural_city_generation.__file__)
 sys.path.append(path)
-if not os.path.exists(path+"/temp/"):
-    os.system("mkdir "+path+"/temp")
-if not os.path.exists(path+"/outputs/"):
-    os.system("mkdir "+path+"/outputs")
+
+
+if not os.path.exists('temp'):
+    os.makedirs('temp')
+
+if not os.path.exists('outputs'):
+    os.makedirs('outputs')
 
 
 def setup_matplotlib():
@@ -36,6 +40,7 @@ def setup_matplotlib():
 from procedural_city_generation.roadmap import main as roadmap_main
 from procedural_city_generation.polygons import main as polygons_main
 from procedural_city_generation.building_generation import main as building_generation_main
+from procedural_city_generation.visualization import blenderize
 from procedural_city_generation.additional_stuff.Singleton import Singleton
 
 
@@ -73,9 +78,11 @@ def building_generation():
 
 
 def visualization():
-    os.system("blender --python "+path+"/visualization/blenderize.py")
-    from procedural_city_generation.additional_stuff.Singleton import Singleton
-    Singleton("visualization").kill()
+    # os.system("blender --python " + path + "/visualization/blenderize.py")
+    # from procedural_city_generation.additional_stuff.Singleton import Singleton
+    # Singleton("visualization").kill()
+    blenderize.blenderize()
+    print(donemessage)
 
 
 def main(args):
@@ -112,16 +119,16 @@ def main(args):
             i = 0
             while True:
                 try:
-                    old = wb[args[3+i]]['value']
-                    wb[args[3+i]]['value'] = eval(args[4+i])
-                    print("{0} was changed from {1} to {2}".format(args[3+i], old, args[4+i]))
+                    old = wb[args[3 + i]]['value']
+                    wb[args[3 + i]]['value'] = eval(args[4 + i])
+                    print("{0} was changed from {1} to {2}".format(args[3 + i], old, args[4 + i]))
                     i += 2
-                    if len(args)-1 < i+4:
+                    if len(args) - 1 < i + 4:
                         break
 
                 except:
                     print(i, len(args))
-                    print("Either {0} is not a configurable parameter for {1}".format(args[3+i], args[1]))
+                    print("Either {0} is not a configurable parameter for {1}".format(args[3 + i], args[1]))
                     return 0
 
             with open(config_file, 'w') as f:
@@ -132,6 +139,7 @@ def main(args):
     elif "run" in args[2]:
         setup_matplotlib()
         eval(args[1])()
+
 
 if __name__ == '__main__':
     main(sys.argv)

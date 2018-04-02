@@ -1,8 +1,8 @@
-
 try:
     import bpy, os, sys
 except:
     pass
+
 
 def createtexture(name, scale, texturetype='REPEAT'):
     """
@@ -19,31 +19,32 @@ def createtexture(name, scale, texturetype='REPEAT'):
     texturetype : String (optional)
         currently unused
     """
-    #TODO: sticky textures 's'
+    # TODO: sticky textures 's'
     if scale == 0:
-        scale=70
+        scale = 70
 
-
-    mat=bpy.data.materials.new(name)
-    mat.use_nodes=True
+    mat = bpy.data.materials.new(name)
+    mat.use_nodes = True
     imagenode = mat.node_tree.nodes.new("ShaderNodeTexImage")
     mat.node_tree.nodes.active = imagenode
-    imagenode.image=bpy.data.images.load(path+"/visualization/Textures/"+name)
-    imagenode.projection='BOX'
-#    imagenode.vector_type='Vector'
-    diffusenode=mat.node_tree.nodes["Diffuse BSDF"]
+    imagenode.image = bpy.data.images.load(
+        os.path.join(os.path.abspath('.'), 'procedural_city_generation', 'visualization', 'Textures', name)
+    )
+    imagenode.projection = 'BOX'
+    #    imagenode.vector_type='Vector'
+    diffusenode = mat.node_tree.nodes["Diffuse BSDF"]
     mat.node_tree.links.new(imagenode.outputs['Color'], diffusenode.inputs[0])
 
-    mappingnode=mat.node_tree.nodes.new("ShaderNodeMapping")
-    mappingnode.vector_type='VECTOR'
-    mappingnode.scale=(scale, scale, scale)
+    mappingnode = mat.node_tree.nodes.new("ShaderNodeMapping")
+    mappingnode.vector_type = 'VECTOR'
+    mappingnode.scale = (scale, scale, scale)
     mat.node_tree.links.new(mappingnode.outputs[0], imagenode.inputs[0])
 
-
-    coordsnode= mat.node_tree.nodes.new("ShaderNodeTexCoord")
+    coordsnode = mat.node_tree.nodes.new("ShaderNodeTexCoord")
     mat.node_tree.links.new(coordsnode.outputs['Generated'], mappingnode.inputs[0])
-    #materialslist.append(mat)
+    # materialslist.append(mat)
     return mat
+
 
 def createmesh(verts, faces, texture):
     """
@@ -57,14 +58,12 @@ def createmesh(verts, faces, texture):
         Iterable of Iterables of the indices of the verts which make up each face
     texture : Blender texture object
     """
-    me=bpy.data.meshes.new('mesh')
-    ob=bpy.data.objects.new('mesh', me)
+    me = bpy.data.meshes.new('mesh')
+    ob = bpy.data.objects.new('mesh', me)
     me.from_pydata(verts, [], faces)
     me.update(calc_edges=True)
     me.materials.append(texture)
     return ob
-
-
 
 
 def createobject(verts, faces, texname, texscale, shrinkwrap):
@@ -88,28 +87,29 @@ def createobject(verts, faces, texname, texscale, shrinkwrap):
         It makes sense to have this    attribute set as true for Roads and Floortypes.
 
     """
-    tex=createtexture(texname, texscale)
-    ob=createmesh(verts, faces, tex)
+    tex = createtexture(texname, texscale)
+    ob = createmesh(verts, faces, tex)
 
     if shrinkwrap:
         ob.modifiers.new("Triangulate", type="TRIANGULATE")
-        triangulate=ob.modifiers["Triangulate"]
+        triangulate = ob.modifiers["Triangulate"]
 
         ob.modifiers.new("Subsurf", type="SUBSURF")
-        subsurf=ob.modifiers["Subsurf"]
-        subsurf.subdivision_type="SIMPLE"
-        subsurf.levels=6
-        subsurf.render_levels=4
+        subsurf = ob.modifiers["Subsurf"]
+        subsurf.subdivision_type = "SIMPLE"
+        subsurf.levels = 6
+        subsurf.render_levels = 4
 
         ob.modifiers.new("Shrinkwrap", type='SHRINKWRAP')
-        wrap=ob.modifiers['Shrinkwrap']
-        wrap.wrap_method='PROJECT'
-        wrap.use_negative_direction=True
-        wrap.use_project_z=True
-        wrap.target=bpy.context.scene.objects['Floormesh']
-        wrap.offset=conf_values[u'offset'][u'value']
+        wrap = ob.modifiers['Shrinkwrap']
+        wrap.wrap_method = 'PROJECT'
+        wrap.use_negative_direction = True
+        wrap.use_project_z = True
+        wrap.target = bpy.context.scene.objects['Floormesh']
+        wrap.offset = conf_values[u'offset'][u'value']
 
     bpy.context.scene.objects.link(ob)
+
 
 def setupscenery():
     """
@@ -117,21 +117,24 @@ def setupscenery():
     In the future could provide options like "time of day", "weather",
     "renderengine".
     """
-    bpy.context.scene.render.engine="CYCLES"
+    bpy.context.scene.render.engine = "CYCLES"
     try:
-        startup_cube=bpy.context.scene.objects.get("Cube")
+        startup_cube = bpy.context.scene.objects.get("Cube")
         bpy.context.scene.objects.unlink(startup_cube)
-    except:
+    except Exception as e:
+        print(str(e))
         pass
 
     if bpy.data.objects.get("Camera") is None:
-        bpy.ops.object.camera_add(view_align=True, location=(1.91961, -3.53902, 1.84546), rotation=(1.141, 1.56617e-08, 0.497))
+        bpy.ops.object.camera_add(view_align=True, location=(1.91961, -3.53902, 1.84546),
+                                  rotation=(1.141, 1.56617e-08, 0.497))
 
     try:
-        bpy.data.lamps["Lamp"].type="SUN"
+        bpy.data.lamps["Lamp"].type = "SUN"
     except:
         bpy.ops.object.lamp_add(type='SUN', location=(4.076245, 4.076245, 4.076245))
         bpy.context.scene.objects['Sun'].name = 'Lamp'
+
 
 def main(points, triangles, polygons):
     """
@@ -144,48 +147,51 @@ def main(points, triangles, polygons):
 
     """
 
-        
     setupscenery()
 
-    me=bpy.data.meshes.new('Floormesh')
-    ob=bpy.data.objects.new('Floormesh', me)
+    me = bpy.data.meshes.new('Floormesh')
+    ob = bpy.data.objects.new('Floormesh', me)
     me.from_pydata(points, [], triangles)
     me.update(calc_edges=True)
 
-    #TODO: Not flexible code.
+    # TODO: Not flexible code.
     me.materials.append(createtexture("Floor02.jpg", 100, True))
 
     bpy.context.scene.objects.link(ob)
 
-
-
-
-    floor_has_texture=False
     for poly in polygons:
-        verts, faces, texname, texscale, shrinkwrap= poly
+        verts, faces, texname, texscale, shrinkwrap = poly
         createobject(verts, faces, texname, texscale, shrinkwrap)
 
 
-
-if __name__ == '__main__':
-
+def blenderize():
     import pickle
+
     global path
-    import os
-    path=os.path.dirname(__file__)+"/.."
+    # path = os.path.dirname(__file__) + "/.."
     ### IF ON WINDOWS, OPEN THIS FILE WITH BLENDER AND OVERWRITE       ###
     ### FOLLOWING LINE WITH YOUR PATH AND UNCOMMENT THE FOLLOWING LINE ###
     # path = "/home/jonathan/procedural_city_generation/procedural_city_generation/"
-    import json
-    global conf_values
+    # path = "C:\\Users\\erico\\Projects\\procedural_city_generation\\"
 
-    with open(path+"/inputs/visualization.conf", 'r') as f:
-        conf_values=json.loads(f.read())
-    with open(path+"/temp/"+conf_values[u'input_name'][u'value']+"_heightmap.txt", 'r') as f:
-        filename=f.read()
-    with open(path+"/temp/"+filename, 'rb') as f:
+    import json
+
+    # global path
+    # path = os.path.join('procedural_city_generation', path_list)
+
+    with open('procedural_city_generation/inputs/visualization.conf', 'r') as f:
+        global conf_values
+        conf_values = json.loads(f.read())
+    with open('temp/' + conf_values[u'input_name'][u'value'] + "_heightmap.txt", 'r') as f:
+        filename = f.read()
+    with open('temp/' + filename, 'rb') as f:
         points, triangles = pickle.loads(f.read())
 
-    with open(path+"/outputs/"+conf_values[u'input_name'][u'value']+".txt", 'rb') as f:
-        polygons=pickle.loads(f.read())
+    with open('outputs/' + conf_values[u'input_name'][u'value'] + ".txt", 'rb') as f:
+        polygons = pickle.loads(f.read())
     main(points, triangles, polygons)
+
+
+if __name__ == '__main__':
+    blenderize()
+

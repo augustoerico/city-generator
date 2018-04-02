@@ -6,25 +6,18 @@ __pycache__/
 *.bat
 
 # Intellij
-.idea
-.idea/*
-*~
+.idea/
 
 # C extensions
 *.so
 
-# Outputs and temp - can be many MB in size
-/procedural_city_generation/outputs/*.txt
-/procedural_city_generation/outputs/*.json
-/procedural_city_generation/outputs/*.png
-/procedural_city_generation/outputs/*
-/procedural_city_generation/temp/*.txt
-/procedural_city_generation/temp/*.json
-/procedural_city_generation/temp/*.png
-/procedural_city_generation/temp/*
-/procedural_city_generation/temp
-/procedural_city_generation/inputs/heightmaps/*.txt
+# Application generated
+outputs/
+temp/
 .doc/_build
+
+# Virtual environment
+venv/
 
 # Distribution / packaging
 .Python

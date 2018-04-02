@@ -1,29 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import division
-gui=None
 
+gui = None
+
+from procedural_city_generation.roadmap.config import config
+from copy import copy
+
+import sys
+import os
 
 def main():
-    from procedural_city_generation.roadmap.config import config
-    from copy import copy
+    singleton = config()
 
-    singleton=config()
-
-    front=copy(singleton.global_lists.vertex_list)
+    front = copy(singleton.global_lists.vertex_list)
     front.pop(0)
     front.pop()
     vertex_queue = copy(singleton.global_lists.vertex_queue)
     from procedural_city_generation.roadmap.iteration import iteration
-    singleton.iterationszaehler=0
-
+    singleton.iterationszaehler = 0
 
     if singleton.plot == 1:
         if gui is None:
             import matplotlib.pyplot as plt
             plt.close()
-            fig=plt.figure()
-            ax=plt.subplot(111)
+            fig = plt.figure()
+            ax = plt.subplot(111)
 
             fig.canvas.draw()
             ax.set_xlim((-singleton.border[0], singleton.border[0]))
@@ -32,14 +34,14 @@ def main():
 
             gui.set_xlim((-singleton.border[0], singleton.border[0]))
             gui.set_ylim((-singleton.border[1], singleton.border[1]))
-    i=0
-    while (front!=[] or singleton.global_lists.vertex_queue    !=[]):
+    i = 0
+    while front != [] or singleton.global_lists.vertex_queue != []:
 
-        i+=1
-        front=iteration(front)
+        i += 1
+        front = iteration(front)
 
         if singleton.plot == 1:
-            if i%singleton.plot_counter == 0:
+            if i % singleton.plot_counter == 0:
                 if gui is None:
                     plt.pause(0.001)
                     try:
@@ -50,10 +52,9 @@ def main():
                 else:
                     gui.update()
 
-            singleton.iterationszaehler=0
+            singleton.iterationszaehler = 0
 
     from procedural_city_generation.additional_stuff.pickletools import save_vertexlist
-
 
     print("Roadmap is complete")
     save_vertexlist(singleton.global_lists.vertex_list, singleton.output_name, singleton.savefig)
@@ -64,7 +65,6 @@ def main():
 
 
 if __name__ == '__main__':
-    import os, sys
     parentpath=os.path.join(os.getcwd(), ("../../"))
     sys.path.append(parentpath)
     main()
