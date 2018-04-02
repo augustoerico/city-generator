@@ -121,7 +121,8 @@ def setupscenery():
     try:
         startup_cube = bpy.context.scene.objects.get("Cube")
         bpy.context.scene.objects.unlink(startup_cube)
-    except:
+    except Exception as e:
+        print(str(e))
         pass
 
     if bpy.data.objects.get("Camera") is None:
