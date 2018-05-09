@@ -1,19 +1,19 @@
 """
-city-builder
+city_builder
 
 Usage:
-    city-builder roadmap
-    city-builder polygons
-    city-builder buildings
-    city-builder -h | --help
-    city-builder --version
+    city_builder roadmap
+    city_builder polygons
+    city_builder buildings
+    city_builder -h | --help
+    city_builder --version
 
 Options:
     -h --help       Show this screen
     --version       Show version
 
 Examples:
-    city-builder roadmap
+    city_builder roadmap
 
 Help:
     For help using this tool, please open an issue on the Github repository:

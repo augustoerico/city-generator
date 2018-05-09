@@ -1,0 +1,3 @@
+pip install -e .
+
+Now you can run: city_builder

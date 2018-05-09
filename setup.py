@@ -29,7 +29,7 @@ class RunTests(Command):
 
 
 args = {
-    'name': 'city-builder',
+    'name': 'city_builder',
     'version': __version__,
     'description': 'A command line program for creating cities',
     'long_description': long_description,
